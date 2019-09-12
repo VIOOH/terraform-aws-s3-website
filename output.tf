@@ -27,8 +27,3 @@ output "s3_bucket_website_domain" {
   value       = "${aws_s3_bucket.default.website_domain}"
   description = "The domain of the website endpoint"
 }
-
-output "s3_bucket_hosted_zone_id" {
-  value       = "${aws_s3_bucket.default.hosted_zone_id}"
-  description = "The Route 53 Hosted Zone ID for this bucket's region"
-}
