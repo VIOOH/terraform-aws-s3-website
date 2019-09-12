@@ -144,11 +144,19 @@ data "aws_iam_policy_document" "deployment" {
   }
 }
 
-module "dns" {
-  source           = "git::https://github.com/cloudposse/terraform-aws-route53-alias.git?ref=tags/0.2.2"
-  aliases          = "${compact(list(signum(length(var.parent_zone_id)) == 1 || signum(length(var.parent_zone_name)) == 1 ? var.hostname : ""))}"
-  parent_zone_id   = "${var.parent_zone_id}"
-  parent_zone_name = "${var.parent_zone_name}"
-  target_dns_name  = "${aws_s3_bucket.default.website_domain}"
-  target_zone_id   = "${aws_s3_bucket.default.hosted_zone_id}"
+resource "aws_route53_record" "dns" {
+  zone_id = "${var.parent_zone_id}"
+  name    = "${aws_s3_bucket.default.website_domain}"
+  type    = "CNAME"
+  ttl     = "30"
+  records = [ "${compact(list(signum(length(var.parent_zone_id)) == 1 || signum(length(var.parent_zone_name)) == 1 ? var.hostname : ""))}"]
 }
+
+#module "dns" {
+#  source           = "git::https://github.com/cloudposse/terraform-aws-route53-alias.git?ref=tags/0.2.2"
+#  aliases          = "${compact(list(signum(length(var.parent_zone_id)) == 1 || signum(length(var.parent_zone_name)) == 1 ? var.hostname : ""))}"
+#  parent_zone_id   = "${var.parent_zone_id}"
+#  parent_zone_name = "${var.parent_zone_name}"
+#  target_dns_name  = "${aws_s3_bucket.default.website_domain}"
+#  target_zone_id   = "${aws_s3_bucket.default.hosted_zone_id}"
+#}
