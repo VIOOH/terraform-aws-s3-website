@@ -146,7 +146,7 @@ data "aws_iam_policy_document" "deployment" {
 
 resource "aws_route53_record" "dns" {
   zone_id = "${var.parent_zone_id}"
-  name    = "${compact(list(signum(length(var.parent_zone_id)) == 1 || signum(length(var.parent_zone_name)) == 1 ? var.hostname : ""))}"
+  name    = "${var.hostname}"
   type    = "CNAME"
   ttl     = "30"
   records = [ "${aws_s3_bucket.default.website_domain}" ]
